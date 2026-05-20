@@ -7,4 +7,6 @@ public interface IQiraaRepository
     Task<IReadOnlyList<Qiraa>> GetListAsync(bool publishedOnly, CancellationToken cancellationToken);
     Task<IReadOnlyList<Qiraa>> SearchAsync(string query, int maxResults, bool publishedOnly, CancellationToken cancellationToken);
     Task<Qiraa?> GetByIdAsync(short qiraaId, CancellationToken cancellationToken);
+    Task<IReadOnlyList<Qiraa>> GetAllAsync(CancellationToken cancellationToken);
+    Task SaveChangesAsync(CancellationToken cancellationToken);
 }

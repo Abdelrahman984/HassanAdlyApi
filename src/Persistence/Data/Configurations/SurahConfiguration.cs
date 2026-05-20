@@ -14,6 +14,10 @@ public sealed class SurahConfiguration : IEntityTypeConfiguration<Surah>
         builder.Property(x => x.NameArabic).HasMaxLength(400).IsRequired();
         builder.Property(x => x.NameTransliteration).HasMaxLength(200).IsRequired();
         builder.Property(x => x.NameEnglish).HasMaxLength(200);
+        builder.Property(x => x.SeoTitleArabic).HasMaxLength(400);
+        builder.Property(x => x.SeoDescriptionArabic).HasMaxLength(1000);
+        builder.Property(x => x.SeoTitleEnglish).HasMaxLength(400);
+        builder.Property(x => x.SeoDescriptionEnglish).HasMaxLength(1000);
         builder.Property(x => x.SearchNormalizedArabic).HasMaxLength(600).IsRequired();
 
         builder.HasMany(x => x.AudioTracks)

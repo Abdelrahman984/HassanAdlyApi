@@ -2,4 +2,7 @@ namespace HassanAdly.Application.Admin.Auth.Queries.AdminMe;
 
 public sealed record AdminMeDto(
     long Id,
-    string Email);
+    string Email,
+    string DisplayName,
+    string Role,
+    bool IsActive);

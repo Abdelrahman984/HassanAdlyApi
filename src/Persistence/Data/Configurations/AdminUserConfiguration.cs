@@ -15,6 +15,8 @@ public sealed class AdminUserConfiguration : IEntityTypeConfiguration<AdminUser>
         builder.HasIndex(x => x.Email).IsUnique();
 
         builder.Property(x => x.PasswordHash).HasMaxLength(1000).IsRequired();
+        builder.Property(x => x.DisplayName).HasMaxLength(200).IsRequired();
+        builder.Property(x => x.Role).HasMaxLength(64).IsRequired();
 
         builder.HasMany(x => x.RefreshTokens)
             .WithOne(x => x.AdminUser)

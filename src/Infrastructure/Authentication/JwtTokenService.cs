@@ -30,7 +30,8 @@ public sealed class JwtTokenService : IJwtTokenService
         {
             new(JwtRegisteredClaimNames.Sub, adminUser.Id.ToString()),
             new(JwtRegisteredClaimNames.Email, adminUser.Email),
-            new(ClaimTypes.Role, Roles.SuperAdmin)
+            new(ClaimTypes.Role, adminUser.Role),
+            new("display_name", adminUser.DisplayName)
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SigningKey));

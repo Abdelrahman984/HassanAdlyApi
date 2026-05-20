@@ -1,4 +1,5 @@
 using HassanAdly.Application.Admin.RecordingMatrix.Queries.GetRecordingMatrix;
+using HassanAdly.Domain.Constants;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HassanAdly.Api.Controllers;
 
 [ApiController]
-[Authorize]
+[Authorize(Roles = $"{Roles.SuperAdmin},{Roles.MediaAdmin}")]
 [Route("api/v1/admin/recording-matrix")]
 public sealed class AdminRecordingMatrixController : ControllerBase
 {

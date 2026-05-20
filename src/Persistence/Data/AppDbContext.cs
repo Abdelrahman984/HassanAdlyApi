@@ -11,6 +11,10 @@ public sealed class AppDbContext : DbContext
     }
 
     public DbSet<Sheikh> Sheikhs => Set<Sheikh>();
+    public DbSet<SheikhEducation> SheikhEducationEntries => Set<SheikhEducation>();
+    public DbSet<SheikhExperience> SheikhExperienceEntries => Set<SheikhExperience>();
+    public DbSet<SheikhTeacher> SheikhTeachers => Set<SheikhTeacher>();
+    public DbSet<SheikhHighlightCard> SheikhHighlightCards => Set<SheikhHighlightCard>();
     public DbSet<Surah> Surahs => Set<Surah>();
     public DbSet<Ayah> Ayat => Set<Ayah>();
     public DbSet<Qiraa> Qiraat => Set<Qiraa>();

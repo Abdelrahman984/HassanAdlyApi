@@ -1,5 +1,6 @@
 using System.Text;
 using HassanAdly.Application.Common.Interfaces;
+using HassanAdly.Domain.Constants;
 using HassanAdly.Infrastructure.Authentication;
 using HassanAdly.Domain.Entities;
 using HassanAdly.Persistence.Data;
@@ -85,6 +86,8 @@ if (app.Environment.IsDevelopment())
                 Id = 0,
                 Email = adminSeedEmail.Trim(),
                 PasswordHash = passwordHasher.Hash(adminSeedPassword),
+                DisplayName = "Super Admin",
+                Role = Roles.SuperAdmin,
                 IsActive = true
             });
             await dbContext.SaveChangesAsync(app.Lifetime.ApplicationStopping);

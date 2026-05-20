@@ -1,4 +1,5 @@
 using HassanAdly.Application.Common.Interfaces;
+using HassanAdly.Application.Admin.Dashboard.Queries.GetAdminDashboard;
 using HassanAdly.Persistence.Data;
 using HassanAdly.Persistence.Data.Interceptors;
 using HassanAdly.Persistence.QueryServices;
@@ -32,9 +33,11 @@ public static class DependencyInjection
         builder.Services.AddScoped<ISheikhRepository, SheikhRepository>();
         builder.Services.AddScoped<ISurahRepository, SurahRepository>();
         builder.Services.AddScoped<IQiraaRepository, QiraaRepository>();
+        builder.Services.AddScoped<IFeaturedContentRepository, FeaturedContentRepository>();
         builder.Services.AddScoped<IAudioTrackRepository, AudioTrackRepository>();
         builder.Services.AddScoped<IAdminUserRepository, AdminUserRepository>();
         builder.Services.AddScoped<IAdminRefreshTokenRepository, AdminRefreshTokenRepository>();
+        builder.Services.AddScoped<IAdminDashboardQueryService, AdminDashboardQueryService>();
         builder.Services.AddScoped<IRecordingMatrixQueryService, RecordingMatrixQueryService>();
 
         builder.Services.AddScoped<AppDbContextInitialiser>();

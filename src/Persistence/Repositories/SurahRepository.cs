@@ -53,10 +53,21 @@ public sealed class SurahRepository : ISurahRepository
     public Task<Surah?> GetByIdAsync(short surahId, CancellationToken cancellationToken)
     {
         return _dbContext.Surahs
-            .AsNoTracking()
             .Include(x => x.AudioTracks)
             .ThenInclude(t => t.Qiraa)
             .FirstOrDefaultAsync(x => x.Id == surahId, cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<Surah>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        return await _dbContext.Surahs
+            .OrderBy(x => x.DisplayOrder)
+            .ToListAsync(cancellationToken);
+    }
+
+    public Task SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        return _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     private IQueryable<Surah> BaseQuery(bool publishedOnly)

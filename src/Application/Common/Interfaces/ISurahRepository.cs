@@ -7,4 +7,6 @@ public interface ISurahRepository
     Task<IReadOnlyList<Surah>> GetListAsync(string? search, bool publishedOnly, int page, int pageSize, CancellationToken cancellationToken);
     Task<int> GetCountAsync(string? search, bool publishedOnly, CancellationToken cancellationToken);
     Task<Surah?> GetByIdAsync(short surahId, CancellationToken cancellationToken);
+    Task<IReadOnlyList<Surah>> GetAllAsync(CancellationToken cancellationToken);
+    Task SaveChangesAsync(CancellationToken cancellationToken);
 }

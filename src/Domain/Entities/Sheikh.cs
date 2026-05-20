@@ -11,7 +11,14 @@ public class Sheikh : BaseAuditableEntity<long>
     public required string BiographyArabic { get; set; }
     public required string ShortDescriptionArabic { get; set; }
     public required string ProfileImageUrl { get; set; }
+    public string? HeroImageUrl { get; set; }
+    public string? HeroTitleArabic { get; set; }
+    public string? HeroSubtitleArabic { get; set; }
     public bool IsActive { get; set; }
 
     public ICollection<AudioTrack> AudioTracks { get; set; } = new List<AudioTrack>();
+    public ICollection<SheikhEducation> EducationEntries { get; set; } = new List<SheikhEducation>();
+    public ICollection<SheikhExperience> ExperienceEntries { get; set; } = new List<SheikhExperience>();
+    public ICollection<SheikhTeacher> Teachers { get; set; } = new List<SheikhTeacher>();
+    public ICollection<SheikhHighlightCard> HighlightCards { get; set; } = new List<SheikhHighlightCard>();
 }

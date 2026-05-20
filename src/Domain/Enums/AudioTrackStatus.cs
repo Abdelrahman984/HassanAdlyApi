@@ -6,5 +6,6 @@ public enum AudioTrackStatus : byte
     Processing = 2,
     Ready = 3,
     Published = 4,
-    Archived = 5
+    Archived = 5,
+    Failed = 6
 }

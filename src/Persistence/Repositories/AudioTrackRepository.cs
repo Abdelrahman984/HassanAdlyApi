@@ -29,25 +29,30 @@ public sealed class AudioTrackRepository : IAudioTrackRepository
     public Task<AudioTrack?> GetByIdAsync(long audioTrackId, CancellationToken cancellationToken)
     {
         return _dbContext.AudioTracks
-            .AsNoTracking()
             .Include(x => x.Surah)
             .Include(x => x.Qiraa)
+            .Include(x => x.Sheikh)
             .FirstOrDefaultAsync(x => x.Id == audioTrackId, cancellationToken);
     }
 
-    public async Task<IReadOnlyList<AudioTrack>> GetListAsync(int page, int pageSize, CancellationToken cancellationToken)
+    public Task<AudioTrack?> GetBySheikhSurahAndQiraaAsync(long sheikhId, short surahId, short qiraaId, CancellationToken cancellationToken)
     {
-        return await _dbContext.AudioTracks
-            .AsNoTracking()
+        return _dbContext.AudioTracks
+            .FirstOrDefaultAsync(x => x.SheikhId == sheikhId && x.SurahId == surahId && x.QiraaId == qiraaId, cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<AudioTrack>> GetListAsync(int page, int pageSize, string? search, AudioTrackStatus? status, short? surahId, short? qiraaId, CancellationToken cancellationToken)
+    {
+        return await BaseAdminQuery(search, status, surahId, qiraaId)
             .OrderByDescending(x => x.UpdatedAtUtc)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
     }
 
-    public Task<int> GetCountAsync(CancellationToken cancellationToken)
+    public Task<int> GetCountAsync(string? search, AudioTrackStatus? status, short? surahId, short? qiraaId, CancellationToken cancellationToken)
     {
-        return _dbContext.AudioTracks.CountAsync(cancellationToken);
+        return BaseAdminQuery(search, status, surahId, qiraaId).CountAsync(cancellationToken);
     }
 
     public async Task<bool> UpdateStatusAsync(long audioTrackId, AudioTrackStatus status, CancellationToken cancellationToken)
@@ -62,5 +67,51 @@ public sealed class AudioTrackRepository : IAudioTrackRepository
         track.UpdatedAtUtc = TimeProvider.System.GetUtcNow();
         await _dbContext.SaveChangesAsync(cancellationToken);
         return true;
+    }
+
+    public async Task AddAsync(AudioTrack audioTrack, CancellationToken cancellationToken)
+    {
+        await _dbContext.AudioTracks.AddAsync(audioTrack, cancellationToken);
+    }
+
+    public Task SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        return _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    private IQueryable<AudioTrack> BaseAdminQuery(string? search, AudioTrackStatus? status, short? surahId, short? qiraaId)
+    {
+        var query = _dbContext.AudioTracks
+            .AsNoTracking()
+            .Include(x => x.Surah)
+            .Include(x => x.Qiraa)
+            .Include(x => x.Sheikh)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var trimmed = search.Trim();
+            query = query.Where(x =>
+                x.TitleArabic.Contains(trimmed) ||
+                x.Surah!.NameArabic.Contains(trimmed) ||
+                x.Qiraa!.NameArabic.Contains(trimmed));
+        }
+
+        if (status.HasValue)
+        {
+            query = query.Where(x => x.Status == status.Value);
+        }
+
+        if (surahId.HasValue)
+        {
+            query = query.Where(x => x.SurahId == surahId.Value);
+        }
+
+        if (qiraaId.HasValue)
+        {
+            query = query.Where(x => x.QiraaId == qiraaId.Value);
+        }
+
+        return query;
     }
 }

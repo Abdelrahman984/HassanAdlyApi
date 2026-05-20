@@ -1,11 +1,15 @@
 using HassanAdly.Application.Admin.Tracks.Commands.ArchiveTrack;
+using HassanAdly.Application.Admin.Tracks.Commands.CreateAdminTrack;
 using HassanAdly.Application.Admin.Tracks.Commands.FinalizeTrackUpload;
 using HassanAdly.Application.Admin.Tracks.Commands.InitTrackUpload;
 using HassanAdly.Application.Admin.Tracks.Commands.PublishTrack;
+using HassanAdly.Application.Admin.Tracks.Commands.UpdateAdminTrack;
 using HassanAdly.Application.Admin.Tracks.Dtos;
 using HassanAdly.Application.Admin.Tracks.Queries.GetAdminTrackById;
 using HassanAdly.Application.Admin.Tracks.Queries.GetAdminTracks;
 using HassanAdly.Application.Common.Models;
+using HassanAdly.Domain.Constants;
+using HassanAdly.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HassanAdly.Api.Controllers;
 
 [ApiController]
-[Authorize]
+[Authorize(Roles = $"{Roles.SuperAdmin},{Roles.MediaAdmin}")]
 [Route("api/v1/admin/tracks")]
 public sealed class AdminTracksController : ControllerBase
 {
@@ -28,9 +32,13 @@ public sealed class AdminTracksController : ControllerBase
     public async Task<ActionResult<PagedResult<AdminTrackListItemDto>>> GetList(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20,
+        [FromQuery] string? search = null,
+        [FromQuery] AudioTrackStatus? status = null,
+        [FromQuery] short? surahId = null,
+        [FromQuery] short? qiraaId = null,
         CancellationToken cancellationToken = default)
     {
-        var result = await _sender.Send(new GetAdminTracksQuery(page, pageSize), cancellationToken);
+        var result = await _sender.Send(new GetAdminTracksQuery(page, pageSize, search, status, surahId, qiraaId), cancellationToken);
         return Ok(result);
     }
 
@@ -44,6 +52,44 @@ public sealed class AdminTracksController : ControllerBase
         }
 
         return Ok(result);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<long>> Create([FromBody] CreateAdminTrackRequest request, CancellationToken cancellationToken)
+    {
+        var id = await _sender.Send(new CreateAdminTrackCommand(
+            request.SheikhId,
+            request.SurahId,
+            request.QiraaId,
+            request.TitleArabic,
+            request.DurationSeconds,
+            request.FileSizeBytes,
+            request.BitrateKbps,
+            request.AudioObjectKey,
+            request.Format,
+            request.Checksum,
+            request.Version,
+            request.Status), cancellationToken);
+
+        return Ok(id);
+    }
+
+    [HttpPut("{id:long}")]
+    public async Task<IActionResult> Update(long id, [FromBody] UpdateAdminTrackRequest request, CancellationToken cancellationToken)
+    {
+        var ok = await _sender.Send(new UpdateAdminTrackCommand(
+            id,
+            request.TitleArabic,
+            request.DurationSeconds,
+            request.FileSizeBytes,
+            request.BitrateKbps,
+            request.AudioObjectKey,
+            request.Format,
+            request.Checksum,
+            request.Version,
+            request.Status), cancellationToken);
+
+        return ok ? NoContent() : NotFound();
     }
 
     [HttpPost("{id:long}/init-upload")]
@@ -74,3 +120,28 @@ public sealed class AdminTracksController : ControllerBase
         return ok ? Ok() : NotFound();
     }
 }
+
+public sealed record CreateAdminTrackRequest(
+    long SheikhId,
+    short SurahId,
+    short QiraaId,
+    string TitleArabic,
+    int DurationSeconds,
+    long FileSizeBytes,
+    int BitrateKbps,
+    string AudioObjectKey,
+    string? Format,
+    string? Checksum,
+    int Version,
+    AudioTrackStatus Status);
+
+public sealed record UpdateAdminTrackRequest(
+    string TitleArabic,
+    int DurationSeconds,
+    long FileSizeBytes,
+    int BitrateKbps,
+    string AudioObjectKey,
+    string? Format,
+    string? Checksum,
+    int Version,
+    AudioTrackStatus Status);

@@ -22,6 +22,11 @@ public sealed class AdminMeQueryHandler : IRequestHandler<AdminMeQuery, AdminMeD
             return null;
         }
 
-        return new AdminMeDto(adminUser.Id, adminUser.Email);
+        return new AdminMeDto(
+            adminUser.Id,
+            adminUser.Email,
+            adminUser.DisplayName,
+            adminUser.Role,
+            adminUser.IsActive);
     }
 }

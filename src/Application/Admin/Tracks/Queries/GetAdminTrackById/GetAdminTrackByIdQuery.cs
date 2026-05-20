@@ -26,14 +26,19 @@ public sealed class GetAdminTrackByIdQueryHandler : IRequestHandler<GetAdminTrac
         return new AdminTrackDetailsDto(
             track.Id,
             track.SheikhId,
+            track.Sheikh?.DisplayNameArabic ?? string.Empty,
             track.SurahId,
+            track.Surah?.NameArabic ?? string.Empty,
             track.QiraaId,
+            track.Qiraa?.NameArabic ?? string.Empty,
             track.TitleArabic,
             track.Status,
             track.DurationSeconds,
             track.BitrateKbps,
             track.FileSizeBytes,
             track.AudioObjectKey,
+            track.Format,
+            track.Checksum,
             track.Version);
     }
 }

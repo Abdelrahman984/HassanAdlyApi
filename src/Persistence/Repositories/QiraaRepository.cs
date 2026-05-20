@@ -49,6 +49,18 @@ public sealed class QiraaRepository : IQiraaRepository
 
     public Task<Qiraa?> GetByIdAsync(short qiraaId, CancellationToken cancellationToken)
     {
-        return _dbContext.Qiraat.AsNoTracking().FirstOrDefaultAsync(x => x.Id == qiraaId, cancellationToken);
+        return _dbContext.Qiraat.FirstOrDefaultAsync(x => x.Id == qiraaId, cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<Qiraa>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        return await _dbContext.Qiraat
+            .OrderBy(x => x.DisplayOrder)
+            .ToListAsync(cancellationToken);
+    }
+
+    public Task SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        return _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
