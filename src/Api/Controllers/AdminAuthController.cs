@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using HassanAdly.Application.Admin.Auth.Commands.AdminLogin;
 using HassanAdly.Application.Admin.Auth.Commands.AdminLogout;
 using HassanAdly.Application.Admin.Auth.Commands.AdminRefresh;
@@ -59,7 +60,8 @@ public sealed class AdminAuthController : ControllerBase
     [HttpGet("me")]
     public async Task<ActionResult<AdminMeDto>> Me(CancellationToken cancellationToken)
     {
-        var sub = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+        var sub = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
+            ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (!long.TryParse(sub, out var adminUserId))
         {
             return Unauthorized();

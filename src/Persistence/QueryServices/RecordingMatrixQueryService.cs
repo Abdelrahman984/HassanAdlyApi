@@ -28,12 +28,16 @@ public sealed class RecordingMatrixQueryService : IRecordingMatrixQueryService
             .Select(x => new { x.Id, x.NameArabic })
             .ToListAsync(cancellationToken);
 
-        var latestTracks = await _dbContext.AudioTracks
+        var tracks = await _dbContext.AudioTracks
             .AsNoTracking()
+            .Select(x => new { x.SurahId, x.QiraaId, x.Version, x.Status, x.Id })
+            .ToListAsync(cancellationToken);
+
+        var latestTracks = tracks
             .GroupBy(x => new { x.SurahId, x.QiraaId })
             .Select(g => g.OrderByDescending(x => x.Version).First())
             .Select(x => new { x.SurahId, x.QiraaId, x.Status, x.Id })
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         var trackLookup = latestTracks.ToDictionary(x => (x.SurahId, x.QiraaId), x => x);
 

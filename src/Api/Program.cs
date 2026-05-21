@@ -71,6 +71,7 @@ if (app.Environment.IsDevelopment())
     using var scope = app.Services.CreateScope();
     var dbInitialiser = scope.ServiceProvider.GetRequiredService<AppDbContextInitialiser>();
     await dbInitialiser.InitialiseAsync(app.Lifetime.ApplicationStopping);
+    await dbInitialiser.SeedAsync(app.Lifetime.ApplicationStopping);
 
     var adminSeedEmail = Environment.GetEnvironmentVariable("ADMIN_SEED_EMAIL");
     var adminSeedPassword = Environment.GetEnvironmentVariable("ADMIN_SEED_PASSWORD");
