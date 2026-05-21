@@ -29,18 +29,19 @@ builder.Services.AddOpenApi(options =>
 builder.Services.AddCors();
 
 var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>() ?? new JwtOptions();
-if (string.IsNullOrWhiteSpace(jwtOptions.SigningKey))
+var jwtSigningKeyByteCount = Encoding.UTF8.GetByteCount(jwtOptions.SigningKey ?? string.Empty);
+if (string.IsNullOrWhiteSpace(jwtOptions.SigningKey) || jwtSigningKeyByteCount < 32)
 {
     if (!builder.Environment.IsDevelopment())
     {
-        throw new InvalidOperationException("Jwt:SigningKey must be configured.");
+        throw new InvalidOperationException("Jwt:SigningKey must be configured and be at least 32 bytes.");
     }
 
     jwtOptions = new JwtOptions
     {
         Issuer = jwtOptions.Issuer,
         Audience = jwtOptions.Audience,
-        SigningKey = "dev-only-signing-key-change-me",
+        SigningKey = "dev-only-signing-key-change-me-please",
         AccessTokenLifetimeMinutes = jwtOptions.AccessTokenLifetimeMinutes
     };
 }
