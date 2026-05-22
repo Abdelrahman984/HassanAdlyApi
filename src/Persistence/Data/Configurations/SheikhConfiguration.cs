@@ -47,5 +47,27 @@ public sealed class SheikhConfiguration : IEntityTypeConfiguration<Sheikh>
             .WithOne(x => x.Sheikh)
             .HasForeignKey(x => x.SheikhId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasData(
+    new Sheikh
+    {
+        Id = 1,
+        Slug = "hassan-adly",
+        DisplayNameArabic = "حسن عدلي",
+        DisplayNameEnglish = "Hassan Adly",
+        FullNameArabic = "حسن بن محمد مصطفى عدلي",
+        BirthDate = new System.DateOnly(1980, 1, 1),
+        BirthPlaceArabic = "مصر",
+        BiographyArabic = "قارئ القرآن الكريم",
+        ShortDescriptionArabic = "قارئ ومقرئ للقرآن الكريم",
+        ProfileImageUrl = "/images/hassan-adly-profile.jpg",
+        HeroImageUrl = "/images/hero-bg.jpg",
+        HeroTitleArabic = "الشيخ حسن عدلي",
+        HeroSubtitleArabic = "المقرئ بالقراءات العشر",
+        IsActive = true
+    }
+);
+
     }
 }
+

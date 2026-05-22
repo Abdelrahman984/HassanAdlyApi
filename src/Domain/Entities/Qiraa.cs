@@ -1,6 +1,6 @@
 namespace HassanAdly.Domain.Entities;
 
-public class Qiraa : BaseAuditableEntity<short>
+public class Qiraa : BaseEntity<short>
 {
     public required string Slug { get; set; }
     public required string NameArabic { get; set; }

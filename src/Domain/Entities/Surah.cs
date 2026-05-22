@@ -2,7 +2,7 @@ using HassanAdly.Domain.Enums;
 
 namespace HassanAdly.Domain.Entities;
 
-public class Surah : BaseAuditableEntity<short>
+public class Surah : BaseEntity<short>
 {
     public required string NameArabic { get; set; }
     public required string NameTransliteration { get; set; }

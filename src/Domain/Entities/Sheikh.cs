@@ -1,6 +1,6 @@
 namespace HassanAdly.Domain.Entities;
 
-public class Sheikh : BaseAuditableEntity<long>
+public class Sheikh : BaseEntity<long>
 {
     public required string Slug { get; set; }
     public required string DisplayNameArabic { get; set; }
